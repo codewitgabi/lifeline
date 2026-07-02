@@ -55,6 +55,11 @@ export const CreateRequestSchema = [
   validateRequest,
 ];
 
+export const LookupRequestSchema = [
+  body("phone").trim().notEmpty().withMessage("Phone number is required"),
+  validateRequest,
+];
+
 export const RespondSchema = [
   param("id").isMongoId().withMessage("Invalid request ID"),
   validateRequest,
