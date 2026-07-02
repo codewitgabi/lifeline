@@ -111,5 +111,6 @@
     "paths": {
       "@lifeline/shared": ["../../packages/shared/src/index.ts"]
     }
-  }
+  },
+  "exclude": ["__tests__", "node_modules"]
 }

@@ -88,17 +88,18 @@ function Layout() {
                 <button
                   onClick={toggleAvailability}
                   title={donor.available ? "Pause alerts" : "Resume alerts"}
-                  className="flex items-center gap-1.5 font-mono text-[11px] font-semibold px-3 py-1.5 rounded-full transition-all"
-                  style={
-                    donor.available
-                      ? { background: "#E4F2EC", color: "#15805A", border: "1px solid #BFE0D2" }
-                      : { background: "#FBF8F6", color: "#6E5A5E", border: "1px solid #EBD9DC" }
-                  }
+                  className="flex items-center gap-2 font-mono text-[11px] font-semibold transition-colors"
+                  style={{ color: donor.available ? "#15805A" : "#6E5A5E" }}
                 >
                   <span
-                    className="w-1.5 h-1.5 rounded-full flex-none"
+                    className="relative inline-flex items-center w-8 h-[18px] rounded-full transition-colors duration-200 flex-none"
                     style={{ background: donor.available ? "#15805A" : "#C9B8BB" }}
-                  />
+                  >
+                    <span
+                      className="absolute w-3 h-3 bg-white rounded-full shadow transition-transform duration-200"
+                      style={{ transform: donor.available ? "translateX(18px)" : "translateX(3px)" }}
+                    />
+                  </span>
                   {donor.available ? "Available" : "Paused"}
                 </button>
               </div>

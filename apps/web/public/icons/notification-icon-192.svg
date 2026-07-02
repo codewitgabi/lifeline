@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <!-- Rounded square background: LifeLine crimson -->
+  <rect width="192" height="192" rx="40" fill="#C8102E"/>
+  <!-- Blood drop: top arc + pointed bottom -->
+  <path
+    d="M96 34
+       C96 34 138 82 138 112
+       C138 136.3 119.2 156 96 156
+       C72.8 156 54 136.3 54 112
+       C54 82 96 34 96 34 Z"
+    fill="white"
+    opacity="0.95"
+  />
+  <!-- Inner highlight to add depth -->
+  <ellipse cx="83" cy="100" rx="9" ry="14" fill="white" opacity="0.35"/>
+</svg>

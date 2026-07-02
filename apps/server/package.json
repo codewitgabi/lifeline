@@ -21,7 +21,8 @@
     "mongoose": "^9.7.3",
     "pino": "^10.3.1",
     "socket.io": "^4.8.1",
-    "validator": "^13.15.35"
+    "validator": "^13.15.35",
+    "web-push": "^3.6.7"
   },
   "mongodbMemoryServer": {
     "version": "6"
@@ -35,6 +36,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^26.1.0",
     "@types/supertest": "^7.2.0",
+    "@types/web-push": "^3.6.4",
     "jest": "^30.4.2",
     "mongodb-memory-server": "^11.2.0",
     "morgan": "^1.11.0",

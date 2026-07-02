@@ -9,6 +9,7 @@ import RequestCard from "../components/RequestCard";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import FilterTabs from "../components/dashboard/FilterTabs";
 import EmptyState from "../components/dashboard/EmptyState";
+import PushPromptBanner from "../components/dashboard/PushPromptBanner";
 
 const FILTERS = ["all", "critical", "urgent", "standard"] as const;
 type FilterType = (typeof FILTERS)[number];
@@ -93,6 +94,7 @@ function DonorDashboard() {
         onRefresh={fetchRequests}
         onPostRequest={() => navigate("/request/new")}
       />
+      <PushPromptBanner />
       <FilterTabs filter={filter} counts={counts} onChange={setFilter} />
 
       {error && (

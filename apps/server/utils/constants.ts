@@ -8,3 +8,6 @@ export const NODE_ENV = process.env.NODE_ENV ?? "development";
 export const CORS_ORIGINS = (process.env.CORS_ORIGINS ?? "http://localhost:5173").split(",");
 export const JWT_SECRET = process.env.JWT_SECRET ?? "lifeline-dev-secret-change-in-prod";
 export const JWT_EXPIRES_IN = "30d";
+export const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY ?? "";
+export const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY ?? "";
+export const VAPID_EMAIL = process.env.VAPID_EMAIL ?? "admin@lifeline.app";

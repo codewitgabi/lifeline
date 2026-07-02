@@ -5,6 +5,7 @@ import requestService from "../services/request.service";
 import { SuccessResponse } from "../utils/response";
 import { getIo } from "../sockets";
 import { compatibleDonorsFor } from "@lifeline/shared";
+import { notifyNearbyDonors, notifyRequestOwner } from "../services/push.service";
 import type { BloodType } from "@lifeline/shared";
 
 export const createRequest = catchAsync(async (req: Request, res: Response) => {
@@ -18,6 +19,9 @@ export const createRequest = catchAsync(async (req: Request, res: Response) => {
   for (const bloodType of compatibleTypes) {
     io.to(`donors:${bloodType}`).emit("request:new", payload);
   }
+
+  // Fire-and-forget push to donors not currently online
+  notifyNearbyDonors(String(request._id)).catch(() => null);
 
   res.status(StatusCodes.CREATED).json(
     SuccessResponse({
@@ -81,6 +85,9 @@ export const respondToRequest = catchAsync(
       bloodType: donor.bloodType,
       phone: donor.phone,
     });
+
+    // Push to requester even if they closed the browser tab
+    notifyRequestOwner(String(request._id), donor.name, donor.bloodType).catch(() => null);
 
     res.status(StatusCodes.OK).json(
       SuccessResponse({

@@ -5,6 +5,7 @@ import type { BloodRequest, Responder } from "@lifeline/shared";
 import { api } from "../lib/api";
 import { connectSocket } from "../lib/socket";
 import { useActiveRequestStore } from "../store/activeRequestStore";
+import { subscribeRequestPush } from "../utils/push";
 import RequestSummaryCard from "../components/request-status/RequestSummaryCard";
 import SearchingCard from "../components/request-status/SearchingCard";
 import NotifiedCard from "../components/request-status/NotifiedCard";
@@ -36,6 +37,9 @@ function RequestStatus() {
 
   useEffect(() => {
     if (!id) return;
+
+    // Subscribe so the requester gets a push when a donor responds, even if tab closes
+    subscribeRequestPush(id).catch(() => null);
 
     api
       .get<BloodRequest>(`/api/requests/${id}`)

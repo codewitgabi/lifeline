@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 72 72">
+  <!-- Monochrome badge: white drop on transparent — browser tints it -->
+  <path
+    d="M36 8
+       C36 8 58 36 58 50
+       C58 62.1 48.1 68 36 68
+       C23.9 68 14 62.1 14 50
+       C14 36 36 8 36 8 Z"
+    fill="white"
+  />
+</svg>

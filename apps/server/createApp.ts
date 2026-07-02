@@ -9,6 +9,7 @@ import { SuccessResponse } from "./utils/response";
 import { CORS_ORIGINS, NODE_ENV } from "./utils/constants";
 import donorRoutes from "./routes/donor.routes";
 import requestRoutes from "./routes/request.routes";
+import pushRoutes from "./routes/push.routes";
 
 export function createApp(): Express {
   const app = express();
@@ -29,6 +30,7 @@ export function createApp(): Express {
 
   app.use("/api/donors", donorRoutes);
   app.use("/api/requests", requestRoutes);
+  app.use("/api/push", pushRoutes);
 
   app.use(NotFoundErrorHandler);
   app.use(RequestErrorHandler);

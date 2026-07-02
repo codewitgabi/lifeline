@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { Donor } from "@lifeline/shared";
 import { connectSocket } from "../lib/socket";
 import { useDonorStore } from "../store/donorStore";
+import { isPushSupported, saveDonorSubscription } from "../utils/push";
 import TabSwitcher from "../components/register/TabSwitcher";
 import RegisterForm from "../components/register/RegisterForm";
 import ReturnForm from "../components/register/ReturnForm";
@@ -15,10 +16,21 @@ function RegisterDonor() {
   const setDonor = useDonorStore((s) => s.setDonor);
   const [tab, setTab] = useState<Tab>("register");
 
-  function handleSuccess(donor: Donor, token: string) {
+  async function handleSuccess(donor: Donor, token: string) {
     setDonor(donor, token);
     const socket = connectSocket();
     socket.emit("donor:online", { bloodType: donor.bloodType });
+
+    // We are still inside the user-gesture call stack (form submit → handleSuccess).
+    // Request permission now so the browser shows the popup immediately without
+    // requiring the user to find and click the banner on the dashboard.
+    if (isPushSupported() && Notification.permission === "default") {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        saveDonorSubscription().catch(() => null);
+      }
+    }
+
     navigate("/dashboard");
   }
 

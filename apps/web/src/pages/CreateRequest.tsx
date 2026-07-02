@@ -5,6 +5,7 @@ import { type BloodType, type Urgency } from "@lifeline/shared";
 import type { BloodRequest } from "@lifeline/shared";
 import { api } from "../lib/api";
 import { useActiveRequestStore } from "../store/activeRequestStore";
+import { isPushSupported, saveRequestSubscription } from "../utils/push";
 import ActiveRequestBanner from "../components/create-request/ActiveRequestBanner";
 import BloodDetailsCard from "../components/create-request/BloodDetailsCard";
 import UrgencyCard from "../components/create-request/UrgencyCard";
@@ -50,19 +51,29 @@ function CreateRequest() {
     setLocating(true);
     setError("");
     navigator.geolocation.getCurrentPosition(
-      (pos) => { setCoords([pos.coords.longitude, pos.coords.latitude]); setLocating(false); },
-      () => { setError("Unable to detect location."); setLocating(false); },
+      (pos) => {
+        setCoords([pos.coords.longitude, pos.coords.latitude]);
+        setLocating(false);
+      },
+      () => {
+        setError("Unable to detect location.");
+        setLocating(false);
+      },
     );
   }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError("");
-    if (!form.bloodType) return setError("Please select the required blood type.");
+    if (!form.bloodType)
+      return setError("Please select the required blood type.");
     if (!coords) return setError("Please detect your location first.");
     setSubmitting(true);
     try {
-      const result = await api.post<{ request: BloodRequest; donorsNotified: number }>("/api/requests", {
+      const result = await api.post<{
+        request: BloodRequest;
+        donorsNotified: number;
+      }>("/api/requests", {
         ...form,
         location: { type: "Point", coordinates: coords },
       });
@@ -76,7 +87,23 @@ function CreateRequest() {
         expiresAt: result.request.expiresAt,
         donorsNotified: result.donorsNotified,
       });
-      navigate(`/request/${result.request._id}`, { state: { donorsNotified: result.donorsNotified } });
+
+      // Still inside the form-submit gesture — ask for permission so the popup
+      // appears immediately. If granted, subscribe this device to push updates
+      // for this specific request so the user hears when a donor responds even
+      // with the tab closed.
+      if (isPushSupported() && Notification.permission === "default") {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          saveRequestSubscription(result.request._id).catch(() => null);
+        }
+      } else if (Notification.permission === "granted") {
+        saveRequestSubscription(result.request._id).catch(() => null);
+      }
+
+      navigate(`/request/${result.request._id}`, {
+        state: { donorsNotified: result.donorsNotified },
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to post request.");
     } finally {
@@ -98,12 +125,20 @@ function CreateRequest() {
         className="inline-flex items-center gap-2 font-mono text-[12px] font-medium uppercase tracking-[0.08em] mb-5"
         style={{ color: "#C8102E" }}
       >
-        <span className="inline-block w-5.5 flex-none" style={{ height: 1.5, background: "#C8102E" }} />
+        <span
+          className="inline-block w-5.5 flex-none"
+          style={{ height: 1.5, background: "#C8102E" }}
+        />
         Emergency Request
       </span>
       <h1
         className="font-display font-semibold mb-3"
-        style={{ fontSize: "clamp(26px, 3.2vw, 38px)", lineHeight: 1.1, letterSpacing: "-0.02em", color: "#231518" }}
+        style={{
+          fontSize: "clamp(26px, 3.2vw, 38px)",
+          lineHeight: 1.1,
+          letterSpacing: "-0.02em",
+          color: "#231518",
+        }}
       >
         Post a blood request
       </h1>
@@ -118,7 +153,10 @@ function CreateRequest() {
           unitsNeeded={form.unitsNeeded}
           onSelectUnits={(n) => setForm((f) => ({ ...f, unitsNeeded: n }))}
         />
-        <UrgencyCard urgency={form.urgency} onChange={(u) => setForm((f) => ({ ...f, urgency: u }))} />
+        <UrgencyCard
+          urgency={form.urgency}
+          onChange={(u) => setForm((f) => ({ ...f, urgency: u }))}
+        />
         <ContactLocationCard
           form={{
             hospitalName: form.hospitalName,
@@ -126,7 +164,9 @@ function CreateRequest() {
             requesterPhone: form.requesterPhone,
             notes: form.notes,
           }}
-          onFieldChange={(field, value) => setForm((f) => ({ ...f, [field]: value }))}
+          onFieldChange={(field, value) =>
+            setForm((f) => ({ ...f, [field]: value }))
+          }
           coords={coords}
           locating={locating}
           onDetectLocation={detectLocation}
@@ -135,7 +175,11 @@ function CreateRequest() {
         {error && (
           <div
             className="rounded-[10px] px-4 py-3 text-sm font-medium"
-            style={{ background: "#F7E9EB", border: "1px solid #EBD9DC", color: "#C8102E" }}
+            style={{
+              background: "#F7E9EB",
+              border: "1px solid #EBD9DC",
+              color: "#C8102E",
+            }}
           >
             {error}
           </div>
