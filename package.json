@@ -6,6 +6,7 @@
     "packages/*"
   ],
   "scripts": {
+    "postinstall": "npm run build --workspace=@lifeline/shared",
     "dev": "npm run dev --workspaces --if-present",
     "start": "npm run start --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
