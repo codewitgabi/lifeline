@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Full-bleed crimson background (maskable safe-zone compliant) -->
+  <rect width="512" height="512" fill="#C8102E"/>
+  <!-- Blood drop centred in the safe zone (102–410 x 102–410) -->
+  <path
+    d="M256 118
+       C256 118 154 246 154 314
+       C154 371.4 199.4 418 256 418
+       C312.6 418 358 371.4 358 314
+       C358 246 256 118 256 118Z"
+    fill="white"
+  />
+  <!-- Highlight -->
+  <circle cx="310" cy="284" r="35" fill="white" opacity="0.35"/>
+</svg>

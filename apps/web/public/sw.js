@@ -2,8 +2,20 @@ const CACHE_NAME = "lifeline-sw-v1";
 
 // ── Lifecycle ────────────────────────────────────────────────────────────────
 
+// App shell — the minimum set of files needed to display the UI offline.
+// Vite hashes JS/CSS at build time so we only precache stable public assets.
+const SHELL = [
+  "/",
+  "/manifest.json",
+  "/favicon.svg",
+  "/icons/pwa-192.svg",
+  "/icons/pwa-512.svg",
+];
+
 self.addEventListener("install", (event) => {
-  event.waitUntil(self.skipWaiting());
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener("activate", (event) => {
@@ -17,6 +29,47 @@ self.addEventListener("activate", (event) => {
       ),
     ]),
   );
+});
+
+// ── Fetch (offline support) ───────────────────────────────────────────────────
+
+self.addEventListener("fetch", (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Never intercept API calls, socket handshakes, or cross-origin requests
+  if (url.origin !== self.location.origin || url.pathname.startsWith("/api/")) {
+    return;
+  }
+
+  // Static assets (JS, CSS, images, fonts) — cache first, fall back to network
+  if (
+    request.destination === "script" ||
+    request.destination === "style" ||
+    request.destination === "image" ||
+    request.destination === "font"
+  ) {
+    event.respondWith(
+      caches.match(request).then(
+        (cached) => cached ?? fetch(request).then((res) => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(request, clone));
+          return res;
+        }),
+      ),
+    );
+    return;
+  }
+
+  // Navigation requests — network first, fall back to cached shell
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request).catch(() =>
+        caches.match("/").then((cached) => cached ?? Response.error()),
+      ),
+    );
+    return;
+  }
 });
 
 // ── Push ─────────────────────────────────────────────────────────────────────
