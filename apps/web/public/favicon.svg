@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Crimson rounded-square background -->
+  <rect width="32" height="32" rx="7" fill="#C8102E"/>
+  <!-- Blood drop: wide at bottom, pointed at top — white -->
+  <path
+    d="M16 6
+       C16 6 8.5 15.5 8.5 20.5
+       C8.5 24.6 11.9 28 16 28
+       C20.1 28 23.5 24.6 23.5 20.5
+       C23.5 15.5 16 6 16 6Z"
+    fill="white"
+  />
+  <!-- Highlight dot (top-right of the drop) -->
+  <circle cx="19.5" cy="17" r="2.2" fill="white" opacity="0.4"/>
+</svg>
