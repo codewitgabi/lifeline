@@ -2,7 +2,8 @@
   "name": "lifeline",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",

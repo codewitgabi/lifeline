@@ -5,11 +5,11 @@
   "scripts": {
     "dev": "nodemon app.ts",
     "build": "tsc",
-    "start": "node build/app.js",
-    "test": "echo \"Add your test script here\""
+    "start": "node build/apps/server/app.js",
+    "test": "echo \"Add your test script here\"",
+    "seed": "ts-node -r tsconfig-paths/register scripts/seed.ts"
   },
   "dependencies": {
-    "class": "^0.1.4",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -20,6 +20,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.3",
     "pino": "^10.3.1",
+    "socket.io": "^4.8.1",
     "validator": "^13.15.35"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "morgan": "^1.11.0",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^6.0.3"
   }
 }
