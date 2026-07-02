@@ -43,6 +43,7 @@ No app to install for requesters. No feed to scroll. One focused flow on each si
 | **Phone-based request recovery** | Requesters who lose their tab can find their request by entering their phone number |
 | **Request fulfillment** | Requester closes the request with a two-step confirm; all donor dashboards update instantly |
 | **Auto-expiry** | Requests expire based on urgency (6h critical / 12h urgent / 24h standard) and disappear from all dashboards |
+| **Push notifications** | Donors and requesters receive browser push notifications even when the tab is closed, with deep-link navigation on click |
 | **JWT authentication** | Bearer-token auth on all donor-specific endpoints — no session storage on the server |
 | **Fully responsive UI** | Works on all screen sizes from 320px mobile to wide desktop |
 
@@ -145,7 +146,27 @@ npm install
 
 This installs dependencies for the root, `apps/server`, `apps/web`, and `packages/shared` in one command via npm workspaces.
 
-### 3. Configure environment variables
+### 3. Generate VAPID keys for push notifications
+
+Push notifications require a VAPID key pair. Generate one using the `web-push` CLI — no installation needed:
+
+```bash
+npx web-push generate-vapid-keys
+```
+
+This prints something like:
+
+```
+Public Key:
+BLv5EYYIfZbkSRgMXkP0-RMlgwB88IeCBpp2PWeiW4mZeaLeS-o6byzgjdVoQB_mwuGtIwaKrYjRBwks91oobg8
+
+Private Key:
+r0tlMjufQaQ4zf1Dr24zZPjr1TUAAxFC_EaSAIXcEsc
+```
+
+Keep both values — you will need them in the next step. The public key goes in **both** the server and web environment files. The private key goes in the server only and must never be exposed to the browser.
+
+### 4. Configure environment variables
 
 **Server** — copy and fill in your values:
 
@@ -160,6 +181,9 @@ NODE_ENV=development
 CORS_ORIGINS=http://localhost:5173
 JWT_SECRET=your-secret-key-here
 JWT_EXPIRES_IN=30d
+VAPID_PUBLIC_KEY=<your generated public key>
+VAPID_PRIVATE_KEY=<your generated private key>
+VAPID_EMAIL=mailto:you@example.com
 ```
 
 **Web** — copy and fill in your values:
@@ -171,9 +195,10 @@ cp apps/web/.env.example apps/web/.env
 ```env
 VITE_API_URL=http://localhost:5000
 VITE_SOCKET_URL=http://localhost:5000
+VITE_VAPID_PUBLIC_KEY=<your generated public key — same value as server>
 ```
 
-### 4. Seed the database (optional)
+### 5. Seed the database (optional)
 
 Populate the database with sample donors for development:
 
@@ -254,6 +279,15 @@ npm run start
 | `POST` | `/api/requests/:id/respond` | Bearer | Respond to a request as a donor |
 | `POST` | `/api/requests/:id/fulfill` | — | Mark a request as fulfilled |
 
+### Push Notifications
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/push/vapid-key` | — | Get the server's VAPID public key |
+| `POST` | `/api/push/subscribe` | Bearer | Subscribe a donor's device for push alerts |
+| `POST` | `/api/push/subscribe-request` | — | Subscribe a requester's device to a specific request |
+| `DELETE` | `/api/push/unsubscribe` | — | Remove a push subscription |
+
 ### Socket.io Events
 
 | Event | Direction | Payload | Description |
@@ -312,7 +346,6 @@ npm run start
 
 ## Future Scope
 
-- **Push notifications** — alert donors even when the browser is closed via the Web Push API
 - **Donor availability scheduling** — configurable active hours instead of a binary on/off toggle
 - **Hospital dashboard** — a multi-request management view for medical staff with fulfillment history
 - **Analytics** — response-time metrics and donor coverage heatmaps per region
