@@ -1,1 +1,76 @@
 @import "tailwindcss";
+
+@theme {
+  /* Landing palette */
+  --color-paper: #FBF8F6;
+  --color-ink: #231518;
+  --color-ink-soft: #6E5A5E;
+  --color-crimson: #C8102E;
+  --color-crimson-deep: #9E0C24;
+  --color-blush: #F7E9EB;
+  --color-blush-border: #EBD9DC;
+  --color-sage: #15805A;
+  --color-sage-soft: #E4F2EC;
+  --color-card: #FFFFFF;
+
+  /* Legacy colours used by inner pages */
+  --color-primary: #dc143c;
+  --color-primary-dark: #b01030;
+  --color-primary-light: #fee2e8;
+
+  /* Type scale */
+  --font-family-display: "Fraunces", Georgia, serif;
+  --font-family-sans: "Instrument Sans", -apple-system, sans-serif;
+  --font-family-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+* {
+  font-family: "Instrument Sans", -apple-system, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes blink {
+  50% { opacity: 0.25; }
+}
+
+@keyframes radar-pulse {
+  from { transform: scale(0.3); opacity: 1; }
+  to   { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes radar-ring {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.15; }
+  50%       { opacity: 0.3; }
+}
+
+.animate-blink             { animation: blink 1.4s ease infinite; }
+.animate-radar-pulse       { animation: radar-pulse 1.8s ease-out infinite; }
+.animate-radar-pulse-delay { animation: radar-pulse 1.8s ease-out 0.9s infinite; }
+.animate-radar             { animation: radar-ring 2.2s ease-out infinite; }
+.animate-radar-delay       { animation: radar-ring 2.2s ease-out 0.7s infinite; }
+.animate-radar-delay2      { animation: radar-ring 2.2s ease-out 1.4s infinite; }
+.animate-radar-delay-2    { animation: radar-ring 2.2s ease-out 1.4s infinite; }
+.animate-fade-up           { animation: fade-up 0.6s ease both; }
+.animate-fade-up-d1        { animation: fade-up 0.6s ease 0.1s both; }
+.animate-fade-up-d2        { animation: fade-up 0.6s ease 0.2s both; }
+.animate-fade-up-d3        { animation: fade-up 0.6s ease 0.3s both; }
+.animate-slide-right       { animation: slide-in-right 0.5s ease both; }
+.animate-glow              { animation: glow-pulse 3s ease-in-out infinite; }
