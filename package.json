@@ -1,0 +1,19 @@
+{
+  "name": "lifeline",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "start": "npm run start --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "dev:server": "npm run dev --workspace=@lifeline/server",
+    "dev:web": "npm run dev --workspace=@lifeline/web",
+    "start:server": "npm run start --workspace=@lifeline/server",
+    "start:web": "npm run start --workspace=@lifeline/web",
+    "test:server": "npm run test --workspace=@lifeline/server",
+    "test:web": "npm run test --workspace=@lifeline/web"
+  }
+}
